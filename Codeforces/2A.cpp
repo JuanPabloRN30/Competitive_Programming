@@ -1,4 +1,7 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <map>
+#include <vector>
+#include <set>
 
 using namespace std;
 
@@ -39,7 +42,7 @@ int main()
     cout << *winners.begin() << endl;
   else
   {
-    for( int i = 0 ; i < ronda.size() ; i++ )
+    for( int i = 0 ; i < (int)ronda.size() ; i++ )
     {
       if( mapa.find( ronda[ i ].first ) == mapa.end() )
         mapa[ ronda[ i ].first ] = ronda[ i ].second;

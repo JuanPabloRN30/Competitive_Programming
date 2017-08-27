@@ -76,6 +76,5 @@ int main()
   bfs( x, tree_bob, ans_bob );
   bfs( 0, tree_alice, ans_alice );
   cout << dfs( x ).second * 2<< '\n';
-
   return 0;
 }

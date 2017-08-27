@@ -1,6 +1,7 @@
 #include <iostream>
-#include <cstring>
+#include <vector>
 #include <algorithm>
+#include <cstring>
 
 using namespace std;
 
@@ -18,6 +19,11 @@ struct data
   data()
   {
     pow_2 = pow_5 = INF;
+  }
+
+  void toString()
+  {
+    printf("pow2 = %d - pow5 = %d\t\t",pow_2,pow_5);
   }
 };
 
@@ -128,6 +134,5 @@ int main()
     cout << ans << '\n';
     cout << ans_path << '\n';
   }
-
   return 0;
 }
