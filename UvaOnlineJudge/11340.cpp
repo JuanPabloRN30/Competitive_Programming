@@ -1,40 +1,35 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 
 using namespace std;
 
 int main()
 {
-    int t;
-    cin>>t;
-    while(t--)
+    ios::sync_with_stdio(0); cin.tie(0);
+    int n,k, val;
+    double acum;
+    char carac;
+    string linea;
+    cin >> n;
+    while(n--)
     {
-        int l,m;
-        char auxletra;
-        double auxprecio;
-        double total=0.0;
-        int valor;
-        string aux;
-        double precio[1000] ={0.0};
-        cin>>l;
-        while(l--)
+        map < char , int > mapa;
+        cin >> k;
+        while(k--)
         {
-            cin>>auxletra;
-            cin>>auxprecio;
-            valor= auxletra+128;
-            precio[valor]=auxprecio;
+            cin >> carac >> val;
+            mapa[ carac ] = val;
         }
-        cin>>m;
+        cin >> k;
         cin.ignore();
-        while(m--)
+        acum = 0.0;
+        for(int i = 0 ; i < k ; i++)
         {
-            getline(cin,aux);
-            for(int h=0; h<aux.size();h++){
-                int letra =aux[h]+128;
-                total=total+precio[letra];
-            }
+            getline(cin, linea);
+            for(int j = 0 ; j < linea.size() ; j++)
+                acum += mapa[ linea[j] ];
         }
-        total /= 100;
-        printf("%.2lf$\n",total);
+        acum /= 100.0;
+        cout << fixed << setprecision(2) << acum << "$\n";
     }
     return 0;
 }

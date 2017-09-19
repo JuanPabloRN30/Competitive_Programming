@@ -1,37 +1,51 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <stdio.h>
+#include <cmath>
+#include <vector>
 
 using namespace std;
 
+struct Res
+{
+	long long k;
+	long long x;
+	long long y;
+	Res(int k, int x, int y)
+	{
+		this->k = k;
+		this->x = x;
+		this->y = y;
+	}
+};
+
 int main()
 {
-    int num,cont;
-    double k,x,t_result;
-    int result;
-    while( scanf("%d",&num) != EOF )
-    {
-        k = 1.0 / num;
-        cont = 0;
-        for( int i = 10000 ; i>= num * 2 ; --i )
-        {
-            x = (1.0 / i);
-            if( k - x > 0 )
-                result = (int)((1.0 / ( k - x )) + 0.5);
-            t_result = (1.0 / result) + x;
-            if( t_result == k )
-                cont++;
+	int k;
+	while( scanf("%d",&k) != EOF)
+	{
+		int cont = 0;
+		vector < Res > arr;		
+		for( int i = 1 ; i <= (k*2)+1 ; i++)
+		{
+			double first = 1.0 / (double)k;
+			double second = 1.0 / (double)i;
+			if( first - second == 0)
+				continue;
+			long long x = (1.0 / ( first - second )) + 0.5;
+			double total = 1.0 / (1.0 / (double)x + second);
+ 			if( fabs(total-k) < 1e-9 )
+			{
+				cont++;
+				arr.push_back( Res(k,x,i) );
+			}
+				
+		} 
+		printf("%d\n",cont);
+		for( int i = 0 ; i < cont ; i++)
+		{
+			printf("1/%lld = 1/%lld + 1/%lld\n",arr[i].k,arr[i].x,arr[i].y);
+		}
+	} 
 
-        }
-        printf("%d\n",cont);
-        for( int i = 10000 ; i>= num * 2 ; --i )
-        {
-            x = (1.0 / i);
-            if( k - x > 0 )
-                result = (int)((1.0 / ( k - x )) + 0.5) ;
-            t_result = (1.0 / result) + x;
-            if( t_result == k )
-                printf("1/%d = 1/%d + 1/%d\n",num,i,result);
-
-        }
-    }
-    return 0;
+	return 0;
 }

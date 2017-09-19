@@ -2,93 +2,72 @@
 
 using namespace std;
 
+typedef pair < int , int > ii;
+
 int main()
 {
-  int c;
-  scanf("%d",&c);
-  int aa = 0;
-  while( c-- )
-  {
-    int t,m,n;
-    if(aa > 0)
-      printf("\n");
-    aa++;
-    scanf("%d%d%d",&n,&t,&m);
-    queue < int > left;
-    queue < int > right;
-    int value;
-    string direction;
-    for(int i = 0 ; i < m ; i++)
+    int c, n, t, m, time;
+    string direct;
+    int aux = 0;
+    cin >> c;
+    while(c--)
     {
-      cin >> value >> direction;
-      if(direction == "left")
-        left.push(value);
-      else
-        right.push(value);
-    }
-    bool le = true;
-    int currentTime = 0;
-    if(!left.empty())
-    {
-      if(!right.empty())
-      {
-        if(left.front() < right.front())
-          currentTime += left.front();
-      }
-      else
-      {
-        currentTime += left.front();
-      }
-    }
-    int cont = 1;
-    while(!left.empty() || !right.empty())
-    {
+        if(aux) cout << '\n';
+        aux++;
+        queue < ii > left,right;
+        cin >> n >> t >> m;
+        vector < int > ans(m);
+        for(int i = 0 ; i < m ; i++)
+        {
+            cin >> time >> direct;
+            if(direct == "left")
+                left.push(ii(time,i));
+            else
+                right.push(ii(time,i));
+        }
+        int t_curr = 0, acum = 0, cont = 0;
+        bool curr_pos = true;
+        while(!left.empty() || !right.empty())
+        {
+            if(curr_pos)
+            {
+                cont = 0;
+                while(!left.empty() && left.front().first <= t_curr && cont < n)
+                {
+                    ans[ left.front().second ] = t_curr+t;
+                    left.pop();
+                    cont++;
+                }
+                if(cont || (!right.empty() && right.front().first <= t_curr))
+                {
+                    curr_pos = !curr_pos;
+                    t_curr += t;
+                }
+                else
+                    t_curr++;
+            }
+            else
+            {
+                cont = 0;
+                while(!right.empty() && right.front().first <= t_curr && cont < n)
+                {
+                     ans[ right.front().second ] = t_curr+t;
+                    right.pop();
+                    cont++;
+                }
+                if(cont || (!left.empty() && left.front().first <= t_curr))
+                {
+                    curr_pos = !curr_pos;
+                    t_curr += t;
+                }
+                else
+                    t_curr++;
+            }
+        }
+        for(int i = 0 ; i < ans.size() ; i++)
+            cout << ans[i] << '\n';
 
-      if(le)
-      {
-          cont = 0;
-          while(!left.empty())
-          {
-            //printf("IZQUIERDA: %d--%d\t%d\n",currentTime,(int)left.front(),(int)right.front() );
-            if(left.front() <= currentTime && cont < n)
-            {
-              cont++;
-              printf("%d\n",currentTime+t);
-              left.pop();
-            }
-            else
-              break;
-          }
-        if(cont != 0)
-          le = false;
-        if(!right.empty())
-          if(right.front() <= currentTime)
-            le = false;
-      }
-      else
-      {
-          cont = 0;
-          while(!right.empty())
-          {
-          //  printf("DERECHA: %d--%d\t%d\n",currentTime,(int)left.front(),(int)right.front() );
-            if(right.front() <= currentTime && cont < n)
-            {
-              printf("%d\n",currentTime+t);
-              cont++;
-              right.pop();
-            }
-            else
-              break;
-          }
-            //printf("DERECHA VACIO: %d--%d\n",currentTime,(int)left.front());
-          if(cont != 0)
-            le = true;
-          if(!left.empty())
-            if(left.front() <= currentTime)
-              le = true;
-      }
-      currentTime += t;
     }
-  }
-  return 0;
+
+    return 0;
 }

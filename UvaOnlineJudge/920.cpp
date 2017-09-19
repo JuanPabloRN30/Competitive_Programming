@@ -2,66 +2,68 @@
 
 using namespace std;
 
-#define EPS 1e-9
-
-struct point
+struct TPoint
 {
     double x,y;
-    point() {  x = y = 0.0;}
-    point( double _x , double _y ) : x(_x),y(_y){}
-
-    bool operator < ( point other ) const
+    TPoint()
     {
-        if( fabs( x - other.x ) > EPS )
-            return x < other.x;
-        return y < other.y;
+        x = y = 0.0;
+    }
+    TPoint(double _x, double _y) : x(_x), y(_y){}
+
+    bool operator< (const TPoint p) const
+    {
+        if( x < p.x )
+            return x < p.x;
+        return y < p.y;
     }
 
+    TPoint operator- (const TPoint p) const
+    {
+        return TPoint( p.x - x , p.y - y );
+    }
+
+    double operator* (const TPoint p) const
+    {
+        return x * p.x + y * p.y;
+    }
+
+    TPoint operator* (const double p) const
+    {
+        return TPoint(x * p, y * p);
+    }
+
+    double operator~ () const
+    {
+        return x * x + y * y;
+    }
 };
 
-double dist( point p1, point p2 )
-{
-    double dx = p1.x - p2.x;
-    double dy = p1.y - p2.y;
-    return sqrt( dx * dx + dy * dy );
-}
+TPoint points[110];
+
+double dist_segment( TPoint )
 
 int main()
 {
-    int cases,n;
-    scanf("%d",&cases);
-    while( cases-- )
+    int c,n;
+    cin >> c;
+    while( c-- )
     {
-        scanf("%d",&n);
-        vector < point > points( n );
-        double acum = 0.0;
-        double total = 0.0,pendiente;
+        cin >> n;
         for( int i = 0 ; i < n ; i++ )
+            cin >> points[i].x >> points[i].y;
+        sort(points, points + n);
+        double max_y = 0;
+        double acum = ~(points[n-1]-points[n-2]);
+        TPoint prev = points[n-2];
+        for( int i = n-3 ; i >= 0 ; i-- )
         {
-            scanf("%lf%lf",&points[ i ].x,&points[ i ].y);
-        }
-        sort(points.begin(), points.end());
-        int index = n-1;
-        for( int i = n-2 ; i >= 0 ; i-- )
-        {
-            if( points[ i ].y > points[ index ].y )
+            if( points[i].y > max_y )
             {
-                point p_new;
-                if( index == i+1  )
-                    total = dist( points[ i ], points[ i+1 ] );
-                else
-                {
-                    pendiente = (points[ i+1 ].y - points[ i ].y) / (points[ i + 1 ].x - points[ i ].x);
-                    p_new.y = points[ index ].y;
-                    p_new.x = ((points[ index ].y - points[ i + 1 ].y)/pendiente) + points[ i + 1 ].x;
-                    total = dist( points[ i ], p_new );
-                }
-                acum += total;
-                index = i;
+                max_y = points[i].y;
+                acum +=
             }
         }
-        printf("%.2f\n",acum);
     }
-
     return 0;
 }

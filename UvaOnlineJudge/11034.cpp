@@ -4,63 +4,46 @@ using namespace std;
 
 int main()
 {
-  int c;
-  scanf("%d",&c);
-  while( c-- )
-  {
-    int l,m;
-    scanf("%d%d",&l,&m);
-    queue < int > left;
-    queue < int > right;
-    int value;
-    string direction;
-    for(int i = 0 ; i < m ; i++)
+    ios::sync_with_stdio(0); cin.tie(0);
+    int t,l,m,largo,acum;
+    string dir;
+    cin >> t;
+    while(t--)
     {
-      cin >> value >> direction;
-      if(direction == "left")
-        left.push(value);
-      else
-        right.push(value);
-    }
-    bool le = true;
-    l = l*100;
-    int cont = 0;
-    while(!left.empty() || !right.empty())
-    {
-      if(le)
-      {
-        int acum = 0;
-        while(!left.empty())
+        queue < int > left,right;
+        cin >> l >> m;
+        l*=100;
+        for(int i = 0 ; i < m ; i++)
         {
-          if(acum + left.front() < l)
-          {
-            acum += left.front();
-            left.pop();
-          }
-          else
-            break;
+            cin >> largo >> dir;
+            if(dir == "left") left.push(largo);
+            else right.push(largo);
         }
-        le = false;
-      }
-      else
-      {
-        int acum = 0;
-        while(!right.empty())
+        bool curr_pos = true;
+        int contador = 0;
+        while(!left.empty() || !right.empty())
         {
-          if(acum + right.front() < l)
-          {
-            acum += right.front();
-            right.pop();
-          }
-          else
-            break;
+            acum = 0;
+            if(curr_pos)
+            {
+                while(!left.empty() && left.front() + acum <= l)
+                {
+                    acum += left.front();
+                    left.pop();
+                }
+            }
+            else
+            {
+                while(!right.empty() && right.front() + acum <= l)
+                {
+                    acum += right.front();
+                    right.pop();
+                }
+            }
+            contador++;
+            curr_pos = !curr_pos;
         }
-        le = true;
-      }
-      cont++;
+        cout << contador << '\n';
     }
-    printf("%d\n",cont);
-  }
-
-  return 0;
+    return 0;
 }
