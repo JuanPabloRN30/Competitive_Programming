@@ -1,97 +1,83 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<cstring>
 
 using namespace std;
+char mat[30][30];
+int dp[30][30];
+int cant_w,n;
+int dfil[] = {-1,-1,1,1};
+int dcol[] = {-1,1,-1,1};
 
-char board[ 30 ][ 30 ];
-short dp[ 30 ][ 30 ];
-int n;
-int dx[] = { -1, -1,  1, 1 };
-int dy[] = { -1,  1, -1, 1 };
-
-bool isGood( int x, int y )
+bool in(int i, int j)
 {
-    return x >= 0 && x < n && y >= 0 && y < n;
+    return i >= 0 && i < n && j >= 0 && j < n;
 }
 
-void printBoard()
+int backtrack(int i, int j)
 {
-    for( int i = 0 ; i < n ; i++ )
+    if(dp[i][j] != -1) return dp[i][j];
+    int aux = 0;
+    int current_i, current_j, current_ii, current_jj;
+    for(int k = 0 ; k < 4 ; k++)
     {
-        for( int j = 0 ; j < n ; j++ )
+        current_i = dfil[k]+i;
+        current_j = dcol[k]+j;
+        if(in(current_i, current_j) && mat[current_i][current_j] == 'W')
         {
-            cout << board[ i ][ j ] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-int backtrack( int x, int y)
-{
-   /* printBoard();
-   system("pause");*/
-    if( dp[ x ][ y ] != -1 )
-        return dp[ x ][ y ];
-    int acum = 0;
-    for( int i = 0 ; i < 4 ; i++ )
-    {
-        int currenti = dx[ i ] + x;
-        int currentj = dy[ i ] + y;
-        if( isGood( currenti, currentj ) && board[ currenti ][ currentj ] == 'W' )
-        {
-            int currentii = dx[ i ] + currenti;
-            int currentjj = dy[ i ] + currentj;
-            if( isGood( currentii, currentjj ) && board[ currentii ][ currentjj ] == '_' )
+            current_ii = current_i + dfil[k];
+            current_jj = current_j + dcol[k];
+            mat[current_i][current_j] = '.';
+            if(in(current_ii, current_jj) && (mat[current_ii][current_jj] == '.' || mat[current_ii][current_jj] == '_'))
             {
-                board[ x ][ y ] = '_';
-                board[ currenti ][ currentj ] = '_';
-                board[ currentii ][ currentjj ] = 'B';
-                acum = max(backtrack( currentii, currentjj) + 1, acum);
-                board[ x ][ y ] = 'B';
-                board[ currenti ][ currentj ] = 'W';
-                board[ currentii ][ currentjj ] = '_';
+                mat[current_ii][current_jj] = 'B';
+                mat[i][j] = '.';
+                aux = max(aux,backtrack(current_ii, current_jj)+1);
+                mat[i][j] = 'B';
+                mat[current_ii][current_jj] = '.';
+            }
+            mat[current_i][current_j] = 'W';
+            if(aux == cant_w)
+            {
+                dp[i][j] = cant_w;
+                return cant_w;
             }
         }
     }
-    return dp[ x ][ y ] = acum;
+    return dp[i][j] = aux;
 }
 
 int main()
 {
-    scanf("%d",&n);
-    queue < pair < int , int > > q;
-    int totalBlancas = 0;
-    for( int i = 0 ; i < n ; i++ )
+    ios::sync_with_stdio(0); cin.tie(0);
+    cant_w = 0;
+    cin >> n;
+    for(int i = 0 ; i < n ; i++)
     {
-        for( int j = 0 ; j < n ; j++ )
+        for(int j = 0 ; j < n ; j++)
         {
-            cin >> board[ i ][ j ];
-            if( board[ i ][ j ] == 'B' )
-                q.push( make_pair( i,j ) );
-            else if( board[ i ][ j ] == 'W' )
-                totalBlancas++;
+            cin >> mat[i][j];
+            cant_w += (mat[i][j] == 'W');
         }
     }
-    int cont = 0;
-    pair < int , int > res;
-    memset( dp, -1, sizeof dp );
-    while( !q.empty() )
+    int ans = 0, aux;
+    pair < int , int > pos_ans;
+    memset(dp, -1, sizeof dp);
+    for(int i = 0 ; i < n ; i++)
     {
-        if( backtrack( q.front().first, q.front().second) == totalBlancas )
+        for(int j = 0 ; j < n ; j++)
         {
-            cont ++;
-            res = q.front();
+            if(mat[i][j] == 'B')
+            {
+                aux = backtrack(i, j);
+                ans += (aux == cant_w);
+                if(aux == cant_w) pos_ans = make_pair(i,j);
+            }
         }
-        q.pop();
     }
-    if( cont == 1 )
-    {
-        cout << (char)('a'+res.second) << n-res.first << endl;
+    if(ans == 0) cout << "None\n";
+    else if(ans > 1) cout << "Multiple\n";
+    else{
+        cout << (char)(pos_ans.second+'a') << n-pos_ans.first << '\n';
     }
-    else if( cont > 1 )
-        cout << "Multiple" << endl;
-    else
-        cout << "None" << endl;
-
     return 0;
 }
